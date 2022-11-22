@@ -51,7 +51,7 @@ const Home = ({ navigation }) => {
         ]}
       >
         <Animated.Image
-          style={[{ width: widthScreen, height: '25%' }]}
+          style={[{ width: widthScreen, height: '32%' }]}
           source={require("../assets/headphone_5.gif")}
           resizeMode="cover"
         />
