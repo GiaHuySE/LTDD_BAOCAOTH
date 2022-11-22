@@ -188,13 +188,12 @@ const Home = ({ navigation }) => {
         width: "100%",
         height: "100%",
         backgroundColor: COLOURS.white,
-        marginTop: 10,
       }}
     >
       {isVisible ? (
         showSplashScreen()
       ) : (
-        <Animatable.View animation="zoomIn">
+        <Animatable.View animation="fadeInDownBig">
           {/* <StatusBar backgroundColor={COLOURS.white} barStyle="dark-content" /> */}
           <ScrollView showsVerticalScrollIndicator={false}>
             <View
@@ -202,6 +201,7 @@ const Home = ({ navigation }) => {
                 width: "100%",
                 flexDirection: "row",
                 justifyContent: "space-between",
+                alignItems: 'center',
                 padding: 16,
               }}
             >
@@ -217,6 +217,11 @@ const Home = ({ navigation }) => {
                   }}
                 />
               </TouchableOpacity>
+              <Image
+                source={require("../assets/headphone_4.gif")}
+                style={{ width: 100, height: 100 }}
+                resizeMode="contain"
+              />
               <TouchableOpacity onPress={() => navigation.navigate("MyCart")}>
                 <MaterialCommunityIcons
                   name="cart"
@@ -232,7 +237,13 @@ const Home = ({ navigation }) => {
                 />
               </TouchableOpacity>
             </View>
-            <View style={{ marginBottom: 10, padding: 16 }}>
+            <View
+              style={{
+                marginBottom: 10,
+                padding: 16,
+                backgroundColor: "#7FBBF3",
+              }}
+            >
               <Text
                 style={{
                   fontSize: 26,
