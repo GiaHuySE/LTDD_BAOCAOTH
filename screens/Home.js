@@ -5,14 +5,68 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Dimensions,
+  Animated,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { COLOURS, Items } from "../components/database/Database";
 import { StatusBar } from "expo-status-bar";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
+// //link all name animations: https://github.com/oblador/react-native-animatable
+// //link how to code animation: https://blog.bitsrc.io/top-5-animation-libraries-in-react-native-d00ec8ddfc8d
+import * as Animatable from 'react-native-animatable';
+
+import { SafeAreaView } from "react-native-safe-area-context";
+
+const widthScreen = Dimensions.get("window").width;
+const heightScreen = Dimensions.get("window").height;
+
 const Home = ({ navigation }) => {
+  //splash-screen
+  const splashscreen = useRef(new Animated.Value(0)).current;
+  const [isVisible, setisVisible] = useState(true);
+  useEffect(() => {
+    Animated.sequence([
+      Animated.timing(splashscreen, {
+        toValue: 1,
+        duration: 0,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+  useEffect(() => {
+    let myTimeout = setTimeout(() => {
+      setisVisible(false);
+    }, 5000); //5s
+    return () => clearTimeout(myTimeout);
+  }, []);
+  function showSplashScreen() {
+    return (
+      <Animated.View
+        style={[
+          { flex: 1, backgroundColor: "#7FBBF3", alignItems: 'center', justifyContent: 'center' },
+          { opacity: splashscreen },
+        ]}
+      >
+        <Animated.Image
+          style={[{ width: widthScreen, height: '25%' }]}
+          source={require("../assets/headphone_5.gif")}
+          resizeMode="cover"
+        />
+        <Animated.Image
+          style={[{ width: '50%', height: '20%' }]}
+          source={require("../assets/loading.gif")}
+          resizeMode="contain"
+        />
+        <Text style={{ fontSize: 28, fontWeight: "bold", color: "#fff", marginTop: '5%' }}>
+          WELCOME TO Hi-Fi SHOP !
+        </Text>
+      </Animated.View>
+    );
+  }
+
   const [products, setProduct] = useState([]);
   const [accessories, setAccessories] = useState([]);
 
@@ -129,7 +183,7 @@ const Home = ({ navigation }) => {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={{
         width: "100%",
         height: "100%",
@@ -137,177 +191,191 @@ const Home = ({ navigation }) => {
         marginTop: 10,
       }}
     >
-      <StatusBar backgroundColor={COLOURS.white} barStyle="dark-content" />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            padding: 16,
-          }}
-        >
-          <TouchableOpacity>
-            <Entypo
-              name="shopping-bag"
+      {isVisible ? (
+        showSplashScreen()
+      ) : (
+        <Animatable.View animation="zoomIn">
+          {/* <StatusBar backgroundColor={COLOURS.white} barStyle="dark-content" /> */}
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View
               style={{
-                fontSize: 18,
-                color: COLOURS.backgroundMedium,
-                padding: 12,
-                borderRadius: 10,
-                backgroundColor: COLOURS.backgroundLight,
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                padding: 16,
               }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("MyCart")}>
-            <MaterialCommunityIcons
-              name="cart"
-              style={{
-                fontSize: 18,
-                color: COLOURS.backgroundMedium,
-                padding: 12,
-                borderRadius: 10,
-                backgroundColor: COLOURS.backgroundLight,
-                borderWidth: 1,
-                borderColor: COLOURS.backgroundLight,
-              }}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={{ marginBottom: 10, padding: 16 }}>
-          <Text
-            style={{
-              fontSize: 26,
-              color: COLOURS.black,
-              fontWeight: "500",
-              letterSpacing: 1,
-              marginBottom: 10,
-            }}
-          >
-            Hi-Fi Shop &amp; Service
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              color: COLOURS.black,
-              fontWeight: "400",
-              letterSpacing: 1,
-              lineHeight: 24,
-            }}
-          >
-            Audio shop on Rustaveli Ave 57.
-            {"\n"}This shop offer both products and services
-          </Text>
-        </View>
-        <View
-          style={{
-            padding: 16,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            >
+              <TouchableOpacity>
+                <Entypo
+                  name="shopping-bag"
+                  style={{
+                    fontSize: 18,
+                    color: COLOURS.backgroundMedium,
+                    padding: 12,
+                    borderRadius: 10,
+                    backgroundColor: COLOURS.backgroundLight,
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("MyCart")}>
+                <MaterialCommunityIcons
+                  name="cart"
+                  style={{
+                    fontSize: 18,
+                    color: COLOURS.backgroundMedium,
+                    padding: 12,
+                    borderRadius: 10,
+                    backgroundColor: COLOURS.backgroundLight,
+                    borderWidth: 1,
+                    borderColor: COLOURS.backgroundLight,
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={{ marginBottom: 10, padding: 16 }}>
               <Text
                 style={{
-                  fontSize: 18,
+                  fontSize: 26,
                   color: COLOURS.black,
                   fontWeight: "500",
                   letterSpacing: 1,
+                  marginBottom: 10,
                 }}
               >
-                Products
+                Hi-Fi Shop &amp; Service
               </Text>
               <Text
                 style={{
                   fontSize: 14,
                   color: COLOURS.black,
                   fontWeight: "400",
-                  opacity: 0.5,
-                  marginLeft: 10,
+                  letterSpacing: 1,
+                  lineHeight: 24,
                 }}
               >
-                41
+                Audio shop on Rustaveli Ave 57.
+                {"\n"}This shop offer both products and services
               </Text>
             </View>
-            <Text
-              style={{ fontSize: 14, color: COLOURS.blue, fontWeight: "400" }}
+            <View
+              style={{
+                padding: 16,
+              }}
             >
-              SeeAll
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "space-between",
-            }}
-          >
-            {products.map((data) => {
-              return <ProductCard data={data} key={data.id} />;
-            })}
-          </View>
-        </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      color: COLOURS.black,
+                      fontWeight: "500",
+                      letterSpacing: 1,
+                    }}
+                  >
+                    Products
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: COLOURS.black,
+                      fontWeight: "400",
+                      opacity: 0.5,
+                      marginLeft: 10,
+                    }}
+                  >
+                    41
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: COLOURS.blue,
+                    fontWeight: "400",
+                  }}
+                >
+                  SeeAll
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                }}
+              >
+                {products.map((data) => {
+                  return <ProductCard data={data} key={data.id} />;
+                })}
+              </View>
+            </View>
 
-        <View
-          style={{
-            padding: 16,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: COLOURS.black,
-                  fontWeight: "500",
-                  letterSpacing: 1,
-                }}
-              >
-                Accessory
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: COLOURS.black,
-                  fontWeight: "400",
-                  opacity: 0.5,
-                  marginLeft: 10,
-                }}
-              >
-                78
-              </Text>
-            </View>
-            <Text
-              style={{ fontSize: 14, color: COLOURS.blue, fontWeight: "400" }}
+            <View
+              style={{
+                padding: 16,
+              }}
             >
-              SeeAll
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "space-between",
-            }}
-          >
-            {accessories.map((data) => {
-              return <ProductCard data={data} key={data.id} />;
-            })}
-          </View>
-        </View>
-      </ScrollView>
-    </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      color: COLOURS.black,
+                      fontWeight: "500",
+                      letterSpacing: 1,
+                    }}
+                  >
+                    Accessory
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: COLOURS.black,
+                      fontWeight: "400",
+                      opacity: 0.5,
+                      marginLeft: 10,
+                    }}
+                  >
+                    78
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: COLOURS.blue,
+                    fontWeight: "400",
+                  }}
+                >
+                  SeeAll
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                }}
+              >
+                {accessories.map((data) => {
+                  return <ProductCard data={data} key={data.id} />;
+                })}
+              </View>
+            </View>
+          </ScrollView>
+        </Animatable.View>
+      )}
+    </SafeAreaView>
   );
 };
 
